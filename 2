@@ -1,0 +1,29 @@
+def degree_of_vertices(graph):
+    degrees = {}
+
+    # Инициализируем степени всех вершин нулями
+    for vertex in graph:
+        degrees[vertex] = 0
+
+    # Подсчитываем степени вершин
+    for vertex in graph:
+        degrees[vertex] = len(graph[vertex])
+
+    return degrees
+
+def input_graph():
+    graph = {}
+    n = int(input("Введите количество вершин: "))
+    for i in range(n):
+        vertex = input(f"Введите вершину {i+1}: ")
+        neighbors = input(f"Введите список смежных вершин через пробел для вершины {vertex}: ").split()
+        graph[vertex] = set(neighbors) # Используем set для удаления дубликатов
+    return graph
+
+graph = input_graph()
+
+degrees = degree_of_vertices(graph)
+
+print("Степени вершин:")
+for vertex in degrees:
+    print(f"Вершина {vertex}: степень {degrees[vertex]}")
