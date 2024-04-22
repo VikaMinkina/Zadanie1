@@ -1,0 +1,59 @@
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = {}
+
+    def add_edge(self, u, v):
+        if u not in self.graph:
+            self.graph[u] = []
+        if v not in self.graph:
+            self.graph[v] = []
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+
+    def bridge_util(self, u, visited, parent, low, disc, bridges):
+        visited[u] = True
+        disc[u] = self.time
+        low[u] = self.time
+        self.time += 1
+
+        for v in self.graph[u]:
+            if not visited[v]:
+                parent[v] = u
+                self.bridge_util(v, visited, parent, low, disc, bridges)
+
+                low[u] = min(low[u], low[v])
+
+                if low[v] > disc[u]:
+                    bridges.append((u, v))
+            elif v != parent[u]:
+                low[u] = min(low[u], disc[v])
+
+    def bridge(self):
+        visited = {v: False for v in self.graph}
+        disc = {v: float("inf") for v in self.graph}
+        low = {v: float("inf") for v in self.graph}
+        parent = {v: None for v in self.graph}
+        self.time = 0
+        bridges = []
+
+        for v in self.graph:
+            if not visited[v]:
+                self.bridge_util(v, visited, parent, low, disc, bridges)
+
+        return bridges
+
+if __name__ == "__main__":
+    num_vertices = int(input("Введите количество вершин: "))
+    g = Graph(num_vertices)
+    for i in range(num_vertices):
+        vertex = input(f"Введите вершину {i+1}: ")
+        adjacent_vertices = input(f"Введите список смежных вершин через пробел для вершины {vertex}: ").split()
+        for adj_vertex in adjacent_vertices:
+            g.add_edge(vertex, adj_vertex)
+
+    bridges = g.bridge()
+    print(f"Количество мостов в графе: {len(bridges)}")
+    print("Мосты в графе:")
+    for bridge in bridges:
+        print(bridge)
