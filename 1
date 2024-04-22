@@ -1,0 +1,49 @@
+import heapq
+
+def dijkstra(graph, start, end):
+    distances = {vertex: float('inf') for vertex in graph}
+    distances[start] = 0
+    queue = [(0, start)]
+
+    while queue:
+        current_distance, current_vertex = heapq.heappop(queue)
+        if current_distance > distances[current_vertex]:
+            continue
+
+        for neighbor, weight in graph[current_vertex].items():
+            distance = current_distance + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(queue, (distance, neighbor))
+
+    return distances[end] if distances[end] != float('inf') else None
+
+def input_graph():
+    graph = {}
+    num_edges = int(input("Введите количество ребер в графе: "))
+
+    for _ in range(num_edges):
+        edge = input("Введите ребро в формате 'вершина1 вершина2 вес': ").split()
+        vertex1, vertex2, weight = edge
+        weight = int(weight)
+        
+        if vertex1 not in graph:
+            graph[vertex1] = {}
+        if vertex2 not in graph:
+            graph[vertex2] = {}
+
+        graph[vertex1][vertex2] = weight
+        graph[vertex2][vertex1] = weight
+
+    return graph
+
+graph = input_graph()
+
+start_vertex = input("Введите начальную вершину: ")
+end_vertex = input("Введите конечную вершину: ")
+shortest_distance = dijkstra(graph, start_vertex, end_vertex)
+
+if shortest_distance is None:
+    print(f"Путь между вершинами {start_vertex} и {end_vertex} не существует.")
+else:
+    print(f"Кратчайшее расстояние между вершинами {start_vertex} и {end_vertex}: {shortest_distance}")
